@@ -15,11 +15,14 @@ class DbLoaderService:
         # todo Убрать этот костыль
         data = [val.dict() for val in data]
 
-        stmt = insert(Work).values(data)
+        offset = 0
+        while offset < len(data):
+            stmt = insert(Work).values(data[offset:offset+100])
 
-        stmt = stmt.on_conflict_do_update(
-            index_elements=[Work.ID],
-            set_=dict(WBS=stmt.excluded.WBS)
-        )
-        self.session.execute(stmt)
-        self.session.commit()
+            stmt = stmt.on_conflict_do_update(
+                index_elements=[Work.ID],
+                set_=dict(WBS=stmt.excluded.WBS)
+            )
+            self.session.execute(stmt)
+            self.session.commit()
+            offset += 100
