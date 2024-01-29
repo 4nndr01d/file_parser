@@ -24,9 +24,16 @@ def loader(path: str):
         data = parser.parse(path)
     else:
         raise InvalidFileExtension
+
     session = Session()
     service = DbLoaderService(session)
     service.upload(data)
+
+
+@app.callback()
+def callback():
+    # todo Костыль что бы команда работала в соответствии с тз(как в доке)
+    pass
 
 
 # todo В скрине даты являются обязательными полями, при этом в файлах есть пустые поля
